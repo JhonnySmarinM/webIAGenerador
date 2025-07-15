@@ -13,7 +13,7 @@ import { generatePrompts } from '@/utils/promptGenerator';
 export default function ResultsStep({ data = { description: '', mainColor: '', typography: '', baseDesign: '', logo: null, logoPreview: null }, onBack }: StepProps) {
   const [prompts, setPrompts] = useState<string[]>([]);
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
-  const [templatePreview, setTemplatePreview] = useState<any | null>(null);
+  const [templatePreview, setTemplatePreview] = useState<{ html: string; css: string; js: string } | null>(null);
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
 
   useEffect(() => {
