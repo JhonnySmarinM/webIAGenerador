@@ -7,6 +7,7 @@ export interface TemplateSelections {
   logo?: File | null;
   logoPreview?: string | null; // Para almacenar Data URL de la vista previa del logo
   baseDesign: string; // ID del diseño base elegido, ej: 'design1', 'design2'
+  layout: string; // ID del layout elegido, ej: 'layout1', 'layout2', 'layout3'
 }
 
 export interface GeneratedPrompt {

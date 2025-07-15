@@ -26,7 +26,7 @@ const layoutOptions = [
   }
 ];
 
-export default function ChooseLayout({ data, updateData, onNext, onBack }: StepProps) {
+export default function ChooseLayout({ data = { description: '', mainColor: '', typography: '', baseDesign: '', logo: null, logoPreview: null, layout: 'layout1' }, updateData, onNext, onBack }: StepProps) {
   const selectedLayout = data.layout;
 
   const handleLayoutSelect = (layoutId: 'layout1' | 'layout2' | 'layout3') => {
