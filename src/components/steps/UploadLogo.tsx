@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { StepProps } from '@/types';
+import Image from 'next/image';
 
 // Simplified dropzone for this example
 interface DropzoneProps {
@@ -173,9 +174,11 @@ export default function UploadLogo({ data, updateData, onNext, onBack }: StepPro
       ) : (
         <div className="flex flex-col items-center">
           <div className="bg-gray-100 dark:bg-gray-700 p-6 rounded-lg mb-4 max-w-xs">
-            <img 
+            <Image 
               src={logoPreview} 
               alt="Logo Preview" 
+              width={100} 
+              height={100} 
               className="max-h-40 mx-auto" 
             />
           </div>

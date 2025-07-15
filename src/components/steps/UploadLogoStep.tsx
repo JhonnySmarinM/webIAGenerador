@@ -1,6 +1,7 @@
 import React, { useState, ChangeEvent } from 'react';
 import { useTemplateContext } from '@/context/TemplateContext';
 import { StepProps } from '@/types';
+import Image from 'next/image';
 
 const UploadLogoStep: React.FC<StepProps> = ({ onNext, onPrevious }) => {
   const { selections, updateSelection } = useTemplateContext();
@@ -63,7 +64,13 @@ const UploadLogoStep: React.FC<StepProps> = ({ onNext, onPrevious }) => {
       {selections.logoPreview && (
         <div className="mt-3 p-3 border border-gray-200 dark:border-gray-700 rounded bg-gray-50 dark:bg-gray-800 inline-block">
           <h4 className="text-sm font-medium mb-2 text-description">Vista previa del logo:</h4>
-          <img src={selections.logoPreview} alt="Vista previa del Logo" className="max-h-20 max-w-xs mx-auto rounded" />
+          <Image
+            src={selections.logoPreview}
+            alt="Vista previa del Logo"
+            width={100}
+            height={100}
+            className="max-h-20 max-w-xs mx-auto rounded"
+          />
           <button 
             onClick={handleRemoveLogo} 
             className="mt-2 text-xs text-red-600 hover:text-red-800"

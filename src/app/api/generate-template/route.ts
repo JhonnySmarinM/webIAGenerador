@@ -46,14 +46,13 @@ async function fetchWithTimeout(resource: RequestInfo, options: unknown = {}, ti
 
 // Función para generar código usando Hugging Face como fallback
 async function generateWebPageWithHuggingFace(selections: TemplateSelections): Promise<GeneratedCode> {
-  const { description, mainColor, typography, baseDesign, logoPreview } = selections;
+  const { description, mainColor, typography, logoPreview } = selections;
   const primaryFontFamily = typography.split(',')[0].replace(/['"]/g, '') || 'sans-serif';
   
   const prompt = `<s>[INST] Generate a modern responsive landing page with these requirements:
     - Description: "${description}"
     - Main color: ${mainColor}
     - Typography: "${primaryFontFamily}"
-    - Design style: "${baseDesign}"
     ${logoPreview ? `- Logo: ${logoPreview}` : ''}
 
     Technical requirements:
@@ -536,7 +535,7 @@ async function generateWebPage(
     }
   });
 
-  const { description, mainColor, typography, baseDesign, logoPreview } = selections;
+  const { description, mainColor, typography, logoPreview } = selections;
   const primaryFontFamily = typography.split(',')[0].replace(/['"]/g, '') || 'sans-serif';
   
   const prompt = `
@@ -544,7 +543,6 @@ async function generateWebPage(
     - Descripción: "${description}"
     - Color principal: ${mainColor}
     - Tipografía: "${primaryFontFamily}"
-    - Estilo de diseño: "${baseDesign}"
     ${logoPreview ? `- Logo: ${logoPreview}` : ''}
 
     Requisitos técnicos:
@@ -594,7 +592,7 @@ export async function POST(request: NextRequest) {
     console.log('Received selections:', JSON.stringify(selections, null, 2));
     
     // Validación de datos requeridos
-    if (!selections?.description || !selections?.mainColor || !selections?.typography || !selections?.baseDesign) {
+    if (!selections?.description || !selections?.mainColor || !selections?.typography) {
       return NextResponse.json(
         { error: 'Faltan datos requeridos' },
         { status: 400 }
