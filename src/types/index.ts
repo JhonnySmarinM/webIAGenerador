@@ -32,3 +32,5 @@ export interface StepProps {
   onPrevious?: () => void; // Opcional, ya que el primer paso no tiene "anterior"
   onBack?: () => void; // Alias para onPrevious
 }
+
+export type StepId = 'description' | 'color' | 'typography' | 'logo' | 'layout' | 'results';

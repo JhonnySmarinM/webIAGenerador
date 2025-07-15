@@ -32,7 +32,7 @@ export default function Wizard() {
   };
 
   // Get current component
-  const CurrentStepComponent = stepComponents[steps[currentStep]];
+  const CurrentStepComponent = stepComponents[steps[currentStep] as import("@/types").StepId];
 
   // Common props for all step components
   const stepProps = {
