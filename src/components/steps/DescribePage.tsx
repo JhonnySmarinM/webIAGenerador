@@ -5,7 +5,7 @@ import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
 import { StepProps } from '@/types';
 
-export default function DescribePage({ data, updateData, onNext }: StepProps) {
+export default function DescribePage({ data = { description: '', mainColor: '', typography: '', baseDesign: '', logo: null, logoPreview: null }, updateData, onNext }: StepProps) {
   const [description, setDescription] = useState(data.description);
   const [error, setError] = useState('');
 
@@ -17,8 +17,8 @@ export default function DescribePage({ data, updateData, onNext }: StepProps) {
       return;
     }
     
-    updateData({ description });
-    onNext();
+    if (updateData) updateData({ description });
+    if (onNext) onNext();
   };
 
   return (
@@ -50,7 +50,7 @@ export default function DescribePage({ data, updateData, onNext }: StepProps) {
         {error && <p className="mt-2 text-red-500 text-sm">{error}</p>}
         <div className="mt-4">
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Include details about the purpose, target audience, and key features you'd like to have.
+            Include details about the purpose, target audience, and key features you&apos;d like to have.
           </p>
         </div>
       </form>

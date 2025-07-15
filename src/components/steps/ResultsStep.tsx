@@ -7,13 +7,13 @@ import { saveAs } from 'file-saver';
 import JSZip from 'jszip';
 import Card from '@/components/ui/Card';
 import Button from '@/components/ui/Button';
-import { StepProps, GeneratedTemplate } from '@/types';
+import { StepProps } from '@/types';
 import { generatePrompts } from '@/utils/promptGenerator';
 
-export default function ResultsStep({ data, onBack }: StepProps) {
+export default function ResultsStep({ data = { description: '', mainColor: '', typography: '', baseDesign: '', logo: null, logoPreview: null }, onBack }: StepProps) {
   const [prompts, setPrompts] = useState<string[]>([]);
   const [selectedPromptIndex, setSelectedPromptIndex] = useState<number>(0);
-  const [templatePreview, setTemplatePreview] = useState<GeneratedTemplate | null>(null);
+  const [templatePreview, setTemplatePreview] = useState<any | null>(null);
   const [isGeneratingPreview, setIsGeneratingPreview] = useState(false);
 
   useEffect(() => {
@@ -31,7 +31,7 @@ export default function ResultsStep({ data, onBack }: StepProps) {
     // For this demo, we'll simulate a response with a timeout
     setTimeout(() => {
       // Simple template generation simulation
-      const template: GeneratedTemplate = {
+      const template = {
         html: `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -100,7 +100,7 @@ nav a {
 }
 
 .hero {
-  background-color: ${data.primaryColor}10;
+  background-color: ${data.mainColor}10;
   padding: 4rem 2rem;
   text-align: center;
 }
@@ -111,7 +111,7 @@ h1 {
 }
 
 .cta {
-  background-color: ${data.primaryColor};
+  background-color: ${data.mainColor};
   color: white;
   border: none;
   padding: 0.75rem 1.5rem;
@@ -167,9 +167,8 @@ This template was generated based on your selections in the Web Template Builder
 
 ## Your Selections
 - Description: ${data.description}
-- Primary Color: ${data.primaryColor}
+- Primary Color: ${data.mainColor}
 - Typography: ${data.typography}
-- Layout: ${data.layout}
 
 Created with 💙 by Web Template Builder`;
 
@@ -257,7 +256,7 @@ Created with 💙 by Web Template Builder`;
           
           {!templatePreview && !isGeneratingPreview && (
             <div className="p-8 border border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-center text-gray-500 dark:text-gray-400">
-              <p>Select a prompt and click "Generate Preview" to see a template preview</p>
+              <p>Select a prompt and click &quot;Generate Preview&quot; to see a template preview</p>
             </div>
           )}
           
