@@ -1,0 +1,66 @@
+@import "tailwindcss";
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #ffffff; /* Fondo principal blanco para modo claro */
+  --foreground: #111827; /* Negro más suave para texto en modo claro (era #171717) */
+  --card-background: #ffffff;
+  --card-foreground: var(--foreground);
+}
+
+@theme inline { /* Esto parece ser una sintaxis específica de alguna herramienta/config de Tailwind, la mantendré */
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --background: #111827; /* Fondo principal oscuro (gris azulado oscuro) */
+    --foreground: #e5e7eb; /* Texto claro (gris muy claro) para modo oscuro */
+    --card-background: #1f2937; /* Fondo oscuro para cards en modo oscuro (gris azulado más claro) */
+    --card-foreground: var(--foreground); /* El texto en las cards usará el foreground del modo oscuro */
+  }
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  /* font-family: sans-serif; */ /* Comentado para priorizar la fuente de Next/Font (Inter) */
+  @apply antialiased text-base;
+}
+
+.card {
+  background-color: var(--card-background);
+  color: var(--card-foreground);
+  /* Usar Tailwind para padding, rounded, shadow donde sea posible, pero definimos aquí los colores */
+  @apply p-6 rounded-lg shadow-md mb-6;
+  /* Puedes añadir más estilos base para las cards aquí */
+}
+
+/* Mejoras generales de texto secundario (ej. descripciones en los pasos) */
+.text-muted {
+  @apply text-gray-600 dark:text-gray-400;
+}
+
+.text-description {
+   @apply text-sm text-gray-700 dark:text-gray-300; /* Ligeramente más oscuro que text-muted */
+}
+
+/* Estilos para una mejor apariencia del scrollbar en webkit (opcional) */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  @apply bg-gray-100 dark:bg-gray-700 rounded-lg;
+}
+::-webkit-scrollbar-thumb {
+  @apply bg-gray-400 dark:bg-gray-600 rounded-lg;
+}
+::-webkit-scrollbar-thumb:hover {
+  @apply bg-gray-500 dark:bg-gray-500;
+}
