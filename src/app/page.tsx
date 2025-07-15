@@ -8,7 +8,7 @@ import SelectTypographyStep from '@/components/steps/SelectTypographyStep';
 import UploadLogoStep from '@/components/steps/UploadLogoStep'; 
 import SelectBaseDesignStep from '@/components/steps/SelectBaseDesignStep';
 import ResultsDisplayPage from '@/components/ResultsDisplayPage'; 
-import { TemplateSelections, GenerationOutput } from '@/types';
+import { GenerationOutput } from '@/types';
 
 const TOTAL_STEPS = 5; // Descripción, Color, Tipografía, Logo, Diseño Base
 
@@ -55,9 +55,9 @@ export default function HomePage() {
 
       const data: GenerationOutput = await response.json();
       setGeneratedOutput(data);
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error al generar plantilla:", err);
-      setError(err.message || 'Ocurrió un error al generar la plantilla.');
+      setError((err as Error).message || 'Ocurrió un error al generar la plantilla.');
     } finally {
       setIsLoading(false);
     }

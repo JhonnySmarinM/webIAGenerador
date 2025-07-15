@@ -8,7 +8,6 @@ const API_KEY = process.env.GEMINI_API_KEY || '';
 
 // Configuración para Hugging Face (fallback gratuito)
 const HUGGING_FACE_API_URL = "https://api-inference.huggingface.co/models/codellama/CodeLlama-7b-Instruct-hf";
-const HUGGING_FACE_FALLBACK_MODEL = "codellama/CodeLlama-7b-Instruct-hf";
 const HUGGING_FACE_BACKUP_URL = "https://api-inference.huggingface.co/models/microsoft/DialoGPT-medium";
 const HUGGING_FACE_API_KEY = process.env.HUGGING_FACE_API_KEY || '';
 
@@ -28,17 +27,18 @@ const safetySettings = [
 ];
 
 // Utilidad para fetch con timeout
-async function fetchWithTimeout(resource: RequestInfo, options: any = {}, timeout = 20000) {
+async function fetchWithTimeout(resource: RequestInfo, options: unknown = {}, timeout = 20000) {
   const controller = new AbortController();
   const id = setTimeout(() => controller.abort(), timeout);
   try {
-    const response = await fetch(resource, {
-      ...options,
-      signal: controller.signal
-    });
+    let fetchOptions: RequestInit = { signal: controller.signal };
+    if (options && typeof options === 'object' && !Array.isArray(options)) {
+      fetchOptions = { ...options as RequestInit, signal: controller.signal };
+    }
+    const response = await fetch(resource, fetchOptions);
     clearTimeout(id);
     return response;
-  } catch (error) {
+  } catch (error: unknown) {
     clearTimeout(id);
     throw error;
   }
@@ -120,19 +120,19 @@ async function generateWebPageWithHuggingFace(selections: TemplateSelections): P
         // Si no hay JSON válido, generar código básico basado en la respuesta
         code = generateBasicCodeFromText(generatedText, selections);
       }
-    } catch (parseError) {
+    } catch {
       console.log('Could not parse JSON from Hugging Face response, generating basic code');
       code = generateBasicCodeFromText(generatedText, selections);
     }
 
     return code;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error with Hugging Face API:', error);
     // Intentar con el modelo de respaldo
     try {
       console.log('Trying backup Hugging Face model...');
       return await generateWebPageWithBackupModel(selections);
-    } catch (backupError) {
+    } catch (backupError: unknown) {
       console.error('Error with backup model too:', backupError);
       // Generar código básico como último recurso
       return generateBasicFallbackCode(selections);
@@ -142,10 +142,10 @@ async function generateWebPageWithHuggingFace(selections: TemplateSelections): P
 
 // Función de respaldo con modelo más simple
 async function generateWebPageWithBackupModel(selections: TemplateSelections): Promise<GeneratedCode> {
-  const { description, mainColor, typography, baseDesign } = selections;
-  const primaryFontFamily = typography.split(',')[0].replace(/['"]/g, '') || 'sans-serif';
+  const { description, mainColor, typography } = selections;
+  const primaryFontFamily = typography.split(',')[0].replace(/['\"]/g, '') || 'sans-serif';
   
-  const prompt = `Create a simple HTML page for: ${description}. Use color: ${mainColor}, font: ${primaryFontFamily}, style: ${baseDesign}. Return JSON with html, css, js keys.`;
+  const prompt = `Create a simple HTML page for: ${description}. Use color: ${mainColor}, font: ${primaryFontFamily}. Return JSON with html, css, js keys.`;
 
   try {
     // Validar que existe la clave API de Hugging Face
@@ -189,13 +189,13 @@ async function generateWebPageWithBackupModel(selections: TemplateSelections): P
       if (jsonMatch) {
         return JSON.parse(jsonMatch[0]);
       }
-    } catch (parseError) {
+    } catch {
       console.log('Could not parse JSON from backup model');
     }
 
     // Generar código básico basado en la respuesta
     return generateBasicCodeFromText(generatedText, selections);
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error with backup model:', error);
     return generateBasicFallbackCode(selections);
   }
@@ -203,7 +203,7 @@ async function generateWebPageWithBackupModel(selections: TemplateSelections): P
 
 // Función para generar código básico cuando no se puede parsear JSON
 function generateBasicCodeFromText(text: string, selections: TemplateSelections): GeneratedCode {
-  const { description, mainColor, typography, baseDesign } = selections;
+  const { description, mainColor, typography } = selections;
   const primaryFontFamily = typography.split(',')[0].replace(/['"]/g, '') || 'sans-serif';
   
   return {
@@ -573,14 +573,14 @@ async function generateWebPage(
     }
 
     return code;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error generando código con Gemini:', error);
     console.log('Intentando con Hugging Face como fallback...');
     
     // Intentar con Hugging Face como fallback
     try {
       return await generateWebPageWithHuggingFace(selections);
-    } catch (huggingFaceError) {
+    } catch (huggingFaceError: unknown) {
       console.error('Error con Hugging Face también:', huggingFaceError);
       // Último recurso: código básico
       return generateBasicFallbackCode(selections);
@@ -609,7 +609,7 @@ export async function POST(request: NextRequest) {
         console.log('Usando Gemini API con clave configurada');
         const genAI = new GoogleGenerativeAI(API_KEY);
         code = await generateWebPage(selections, genAI);
-      } catch (geminiError) {
+      } catch (geminiError: unknown) {
         console.error('Error con Gemini, usando Hugging Face:', geminiError);
         code = await generateWebPageWithHuggingFace(selections);
       }
@@ -626,10 +626,14 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json({ template: code });
 
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error('Error en generate-template:', error);
+    let errorMessage = 'Error del servidor';
+    if (error instanceof Error) {
+      errorMessage = error.message;
+    }
     return NextResponse.json(
-      { error: `Error del servidor: ${error.message}` },
+      { error: `Error del servidor: ${errorMessage}` },
       { status: 500 }
     );
   }
