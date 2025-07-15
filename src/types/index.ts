@@ -27,7 +27,7 @@ export interface GenerationOutput {
 }
 
 export interface StepProps {
-  data?: TemplateSelections;
+  data: TemplateSelections;
   updateData?: (data: Partial<TemplateSelections>) => void;
   onNext: () => void;
   onPrevious?: () => void; // Opcional, ya que el primer paso no tiene "anterior"
